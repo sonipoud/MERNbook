@@ -10,9 +10,17 @@ type User {
 }
 
 type Book {
-    _id: ID
     bookId: String
-    authors: []
+    authors: [String]
+    description: String
+    title: String
+    image: String
+    link: String
+}
+
+input saveBook {
+    bookId: String
+    authors: [String]
     description: String
     title: String
     image: String
@@ -21,7 +29,7 @@ type Book {
 
 type Auth {
     token: ID!
-    users: User
+    user: User
 }
 
 type Query {
