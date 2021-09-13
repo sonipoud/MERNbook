@@ -54,9 +54,11 @@ const SavedBooks = () => {
     }
 
     try {
-      await removeBook({
+      const { data } = await removeBook({
         variables: { bookId }
       });
+
+      console.log(data);
       // const response = await deleteBook(bookId, token);
 
       // if (!response.ok) {
