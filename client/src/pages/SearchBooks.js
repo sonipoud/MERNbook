@@ -76,7 +76,7 @@ const SearchBooks = () => {
 
       // updated to use new mutation
       const { data } = await saveBook({
-        variables: { input: bookToSave }
+        variables: { bookData: { ...bookToSave } },
       });
 
       console.log(data);

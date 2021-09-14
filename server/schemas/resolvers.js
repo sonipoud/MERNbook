@@ -14,6 +14,23 @@ const resolvers = {
             }
             throw new AuthenticationError('Not logged in');
         },
+        // return all books
+        books: async (parent, { username }) => {
+            const params = username ? { username } : {};
+            return Book.find();
+        },
+        // return single book
+        book: async (parent, { bookId }) => {
+            return Book.findOne({ bookId });
+        },
+        // return all users
+        users: async () => {
+            return User.find().select("-v -password").populate("savedBooks");
+        },
+        // return single user
+        user: async (parent, { username }) => {
+            return User.findOne({ username }).select("-v -password").populate('savedBooks');
+        },
     },
 
     Mutation: {
@@ -41,11 +58,11 @@ const resolvers = {
             return { token, user };
         },
 
-        saveBook: async (parent, { input }, context) => {
+        saveBook: async (parent, { bookData }, context) => {
             if (context.user) {
                 const updatedUser = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: input } },
+                    { $addToSet: { savedBooks: bookData } },
                     { new: true }
                 );
                 return updatedUser;
@@ -53,11 +70,11 @@ const resolvers = {
             throw new AuthenticationError('You need to be logged in!')
         },
 
-        removeBook: async (parent, { args }, context) => {
+        removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
                 const updatedUser = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: args.bookId} } },
+                    { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 );
                 return updatedUser;
